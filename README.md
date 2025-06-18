@@ -66,7 +66,7 @@ nb: nama branch disini, nama yg anda bikin tadi.
 
 6. Tunggulah hingga proses selesai, kemudian buka github untuk memastikan apakah file sudah terupdate atau belum.
 
-nb: seringlah melakukan git push pada saat membuka vscode pertama kali, agar code dalam vscode selalu terupdate sesuai dengan github.
+nb: seringlah melakukan git pull pada saat membuka vscode pertama kali, agar code dalam vscode selalu terupdate sesuai dengan github.
 ```
-git push
+git pull
 ```

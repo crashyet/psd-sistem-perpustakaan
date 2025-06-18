@@ -2,7 +2,7 @@
 Berisi fitur pencarian buku, hapus pencarian, dan menampilkan antrian buku yang sedang dipinjam.
 
 ### Cara Menggunakannya
-Cloning repository
+Cloning repository menggunakan command prompt atau git bash
 
 ``` bash
 git clone https://github.com/crashyet/psd-sistem-perpustakaan

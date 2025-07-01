@@ -63,7 +63,7 @@ if (isset($_POST['hapus'])) {
 
 <body>
   <div class="sidebar">
-    <a href="#"><img src="css/home.svg" alt="Home"></a>
+    <a href="index.php"><img src="css/home.svg" alt="Home"></a>
     <a href="#"><img src="css/user.svg" alt="User"></a>
   </div>
   

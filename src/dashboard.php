@@ -11,13 +11,16 @@ function isEmpty() {
 }
 
 function isFull() {
-    $maxStack = 10;
+    $maxStack = 5; // max 5 item sesuai requirement kamu
     return $_SESSION['top'] == $maxStack - 1;
 }
 
 function push($data) {
     if (isFull()) {
-        echo "<p style='color:red;'>Stack penuh.</p>";
+        for ($i = 0; $i < $_SESSION['top']; $i++) {
+            $_SESSION['stack'][$i] = $_SESSION['stack'][$i + 1];
+        }
+        $_SESSION['stack'][$_SESSION['top']] = $data;
     } else {
         $_SESSION['top']++;
         $_SESSION['stack'][$_SESSION['top']] = $data;
@@ -33,12 +36,22 @@ function pop($index) {
 }
 
 $showDropdown = false;
+$hasilFilter = [];
 
 if (isset($_POST['cari'])) {
     $judul = trim($_POST['judul']);
     if ($judul !== "") {
         push($judul);
         $showDropdown = true;
+
+        // Load buku.json
+        $dataBuku = json_decode(file_get_contents('../data/buku.json'), true);
+
+        foreach ($dataBuku as $buku) {
+            if (stripos($buku['judul'], $judul) !== false) {
+                $hasilFilter[] = $buku;
+            }
+        }
     }
 }
 
@@ -47,6 +60,7 @@ if (isset($_POST['hapus'])) {
     pop($index);
     $showDropdown = true;
 }
+
 
 // List buku
 $books = [
@@ -424,6 +438,22 @@ $books = [
                             <?php endfor; ?>
                         </div>
                     <?php endif; ?>
+
+                    <?php if (!empty($hasilFilter)) : ?>
+    <h3>Hasil Pencarian:</h3>
+    <div class="container">
+        <?php foreach ($hasilFilter as $buku) : ?>
+            <div class="card">
+                <img src="../css/img/<?php echo $buku['cover']; ?>" alt="cover" width="120">
+
+                <h4><?php echo $buku['judul']; ?></h4>
+                <p><?php echo $buku['genre']; ?></p>
+                <p><?php echo $buku['deskripsi']; ?></p>
+            </div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
+
 
                     <div class="filters">
                         <select class="filter-select">

@@ -3,93 +3,108 @@
     "judul": "As Long as the Lemon Trees Grow",
     "genre": "Fiksi Historis Perang Romansa",
     "deskripsi": "Seorang mahasiswi farmasi yang harus bekerja di rumah sakit penuh korban perang, dihantui oleh Khawf (ketakutan).",
-    "cover": "css/cover/lemon-tree.jpg"
+    "cover": "lemon-tree.jpg"
   },
   {
     "judul": "Ronggeng Dukuh Paruk",
     "genre": "Fiksi Sastra Tragedi",
     "deskripsi": "Kehidupan Srintil, penari ronggeng yang terjebak antara tradisi, kemiskinan, dan eksploitasi.",
-    "cover": "css/cover/ronggeng.jpg"
+    "cover": "ronggeng.jpg"
   },
   {
     "judul": "Laut Bercerita",
     "genre": "Fiksi Sastra Drama",
     "deskripsi": "Aktivis Laut diculik masa Orde Baru, kisah perjuangan dan keteguhan hati.",
-    "cover": "css/cover/laut.jpg"
+    "cover": "laut.jpg"
   },
   {
     "judul": "Negeri 5 Menara",
     "genre": "Inspirasi Coming-of-age",
     "deskripsi": "Santri Pondok Madura berjuang meraih mimpi dengan prinsip Man Jadda Wa Jadda.",
-    "cover": "css/cover/5menara_2.jpg"
+    "cover": "5menara_2.jpg"
   },
   {
     "judul": "Harry Potter and the Philosopher's Stone",
     "genre": "Fantasi Petualangan",
     "deskripsi": "Harry Potter menemukan bahwa ia adalah penyihir dan melalui petualangannya di Sekolah Sihir Hogwarts.",
-    "cover": "css/cover/harry.jpg"
+    "cover": "harry.jpg"
   },
   {
     "judul": "1984",
     "genre": "Fiksi Distopia",
     "deskripsi": "Dunia di bawah pengawasan ketat Big Brother di mana kebebasan individu ditekan dan sejarah dimanipulasi.",
-    "cover": "css/cover/1984.jpg"
+    "cover": "1984.jpeg"
   },
   {
     "judul": "Gadis Kretek",
     "genre": "Fiksi Historis Romansa",
     "deskripsi": "Kisah Jeng Yah, perempuan yang terlibat di industri kretek Indonesia.",
-    "cover": "css/cover/kretek.jpeg"
+    "cover": "kretek.jpeg"
   },
   {
     "judul": "Perahu Kertas",
     "genre": "Romansa Drama",
     "deskripsi": "Kugy dan Keenan saling menemukan cinta dan arti kehidupan.",
-    "cover": "css/cover/pkertas.jpg"
+    "cover": "pkertas.jpg"
   },
   {
     "judul": "Bumi Manusia",
     "genre": "Fiksi Historis",
     "deskripsi": "Minke dan Nyai Ontosoroh di era kolonial Hindia Belanda.",
-    "cover": "css/cover/bumi_manusia.jpg"
+    "cover": "bumi_manusia.jpg"
   },
   {
     "judul": "Laskar Pelangi",
     "genre": "Drama Inspiratif",
     "deskripsi": "10 anak miskin di Belitung bersekolah penuh keterbatasan.",
-    "cover": "css/cover/laskar.jpg"
+    "cover": "laskar.jpg"
   },
   {
     "judul": "The Hobbit",
     "genre": "Fantasi Petualangan",
     "deskripsi": "Bilbo Baggins ikut dalam perjalanan tak terduga untuk merebut kembali harta karun yang dijaga oleh naga Smaug.",
-    "cover": "css/cover/hobbit.jpg"
+    "cover": "hobbit.jpg"
   },
   {
     "judul": "Pangeran Kecil",
     "genre": "Filosofi Anak-anak",
     "deskripsi": "Seorang pilot yang terdampar di gurun bertemu dengan pangeran kecil dari asteroid lain yang mengajarkannya tentang arti kehidupan.",
-    "cover": "css/cover/pangeran.jpg"
+    "cover": "pangeran.jpg"
   },
   {
     "judul": "Dilan 1990",
     "genre": "Romansa Muda",
     "deskripsi": "Kisah cinta antara Milea dan Dilan di Bandung tahun 1990-an dengan segala romansa dan keunikan karakter Dilan.",
-    "cover": "css/cover/dilan.jpg"
+    "cover": "dilan.jpg"
   },
   {
     "judul": "Ayat-Ayat Cinta",
     "genre": "Romansa Religius",
     "deskripsi": "Kisah cinta Fahri, mahasiswa Indonesia di Kairo yang diuji dengan berbagai cobaan dan konflik.",
-    "cover" : "css/cover/ayat.jpg"
+    "cover" : "ayat.jpg"
   },
   {
     "judul": "To Kill a Mockingbird",
     "genre": "Drama Hukum",
     "deskripsi": "Kisah tentang keadilan dan rasisme di Amerika Selatan melalui mata Scout Finch yang masih kecil.",
-    "cover": "css/cover/mockingbird.jpg"
+    "cover": "mockingbird.jpg"
   },
   {
-    "judul": "The Fault in Our Stars",
+    "judul": "Pride and Prejudice",
+    "genre": "Romansa Klasik",
+    "deskripsi": "Kisah Elizabeth Bennet dan Fitzwilliam Darcy yang penuh dengan prasangka dan kelas sosial.",
+    "cover": "pride.jpeg"
+  },
+  {
+    "judul": "The Da Vinci Code",
+    "genre": "Misteri Thriller",
+    "deskripsi": "Robert Langdon memecahkan kode rahasia yang bisa mengubah pandangan dunia tentang Yesus Kristus.",
+    "cover": "davinci.jpg"
+  },
+  {
+    "judul": "Hujan",
+    "genre": "Fiksi Ilmiah",
+    "deskripsi": "Kisah Lail dan Esok di masa depan ketika hujan menjadi bencana yang mematkan dan mengubah peradaban manusia.",
+    "cover": "hujan.jpeg"
   }
 ]

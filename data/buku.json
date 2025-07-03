@@ -90,6 +90,21 @@
     "cover": "css/cover/mockingbird.jpg"
   },
   {
-    "judul": "The Fault in Our Stars",
+    "judul": "Pride and Prejudice",
+    "genre": "Romansa Klasik",
+    "deskripsi": "Kisah Elizabeth Bennet dan Fitzwilliam Darcy yang penuh dengan prasangka dan kelas sosial.",
+    "cover": "css/cover/pride.jpg"
+  },
+  {
+    "judul": "The Da Vinci Code",
+    "genre": "Misteri Thriller",
+    "deskripsi": "Robert Langdon memecahkan kode rahasia yang bisa mengubah pandangan dunia tentang Yesus Kristus.",
+    "cover": "css/cover/davinci.jpg"
+  },
+  {
+    "judul": "Hujan",
+    "genre": "Fiksi Ilmiah",
+    "deskripsi": "Kisah Lail dan Esok di masa depan ketika hujan menjadi bencana yang mematkan dan mengubah peradaban manusia.",
+    "cover": "css/cover/hujan.jpg"
   }
 ]

@@ -274,7 +274,7 @@ $books = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perpustakaan Digital - Dashboard</title>
+    <title>Novel Grove - Dashboard</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -284,7 +284,7 @@ $books = [
             <div class="header-left">
                 <div class="logo">
                     <div class="logo-icon">📚</div>
-                    <h1>Perpustakaan Digital</h1>
+                    <h1>Novel Grove</h1>
                 </div>
             </div>
             <div class="header-right">

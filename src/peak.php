@@ -11,7 +11,7 @@ $buku = [
     ]
 ];
 
-function peak()
+function peek()
 {
     global $buku;
     return $buku['databuku']['top'];
@@ -21,7 +21,7 @@ function peak()
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Demo Peak Stack Buku</title>
+    <title>Demo Peek Stack Buku</title>
 </head>
 <body>
     <h2>Form Tambah Buku (Belum Aktif)</h2>
@@ -32,8 +32,8 @@ function peak()
     </form>
     <p><i>Form tambah buku hanya tampilan, belum ada fungsi tambah buku. Hanya peak stack yang aktif.</i></p>
 
-    <h3>Data Buku Teratas (Peak Stack)</h3>
-    <?php $top = peak(); ?>
+    <h3>Data Buku Teratas (Peek Stack)</h3>
+    <?php $top = peek(); ?>
     <ul>
         <li>Judul: <?php echo htmlspecialchars($top['judul']); ?></li>
         <li>Pengarang: <?php echo htmlspecialchars($top['pengarang']); ?></li>

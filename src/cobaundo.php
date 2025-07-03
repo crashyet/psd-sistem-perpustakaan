@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+$maxStack = 5;
+
 if (!isset($_SESSION['stack'])) {
     $_SESSION['stack'] = [];
     $_SESSION['top'] = -1;
@@ -10,14 +12,15 @@ function isEmpty() {
     return $_SESSION['top'] == -1;
 }
 
-function isFull() {
-    $maxStack = 10;
-    return $_SESSION['top'] == $maxStack - 1;
-}
-
 function push($data) {
-    if (isFull()) {
-        echo "<p style='color:red;'>Stack penuh.</p>";
+    global $maxStack;
+
+    if ($_SESSION['top'] == $maxStack - 1) {
+        //data paling lama dibuang
+        for ($i = 0; $i < $_SESSION['top']; $i++) {
+            $_SESSION['stack'][$i] = $_SESSION['stack'][$i + 1];
+        }
+        $_SESSION['stack'][$_SESSION['top']] = $data;
     } else {
         $_SESSION['top']++;
         $_SESSION['stack'][$_SESSION['top']] = $data;
@@ -51,7 +54,7 @@ if (isset($_POST['hapus'])) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Undo Pencarian</title>
+    <title>Undo Pencarian - Stack Geser Otomatis</title>
     <style>
         .search-container {
             position: relative;

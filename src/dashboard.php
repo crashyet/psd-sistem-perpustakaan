@@ -1,5 +1,7 @@
 <?php
-session_start();
+// session_start();
+
+$maxStack = 5;
 
 if (!isset($_SESSION['stack'])) {
     $_SESSION['stack'] = [];
@@ -10,14 +12,15 @@ function isEmpty() {
     return $_SESSION['top'] == -1;
 }
 
-function isFull() {
-    $maxStack = 10;
-    return $_SESSION['top'] == $maxStack - 1;
-}
-
 function push($data) {
-    if (isFull()) {
-        echo "<p style='color:red;'>Stack penuh.</p>";
+    global $maxStack;
+
+    if ($_SESSION['top'] == $maxStack - 1) {
+        //data paling lama dibuang
+        for ($i = 0; $i < $_SESSION['top']; $i++) {
+            $_SESSION['stack'][$i] = $_SESSION['stack'][$i + 1];
+        }
+        $_SESSION['stack'][$_SESSION['top']] = $data;
     } else {
         $_SESSION['top']++;
         $_SESSION['stack'][$_SESSION['top']] = $data;
@@ -38,7 +41,6 @@ if (isset($_POST['cari'])) {
     $judul = trim($_POST['judul']);
     if ($judul !== "") {
         push($judul);
-        $showDropdown = true;
     }
 }
 
@@ -55,7 +57,7 @@ if (isset($_POST['hapus'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Perpustakaan Digital</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="../css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
@@ -63,14 +65,14 @@ if (isset($_POST['hapus'])) {
 
 <body>
   <div class="sidebar">
-    <a href="index.php"><img src="css/home.svg" alt="Home"></a>
-    <a href="#"><img src="css/user.svg" alt="User"></a>
+    <a href="index.php"><img src="../css/home.svg" alt="Home"></a>
+    <a href="#"><img src="../css/user.svg" alt="User"></a>
   </div>
   
   <div class="main">
     <div id="search-area">
       <form method="POST" class="search-form">
-        <input type="text" name="judul" id="search-input" class="search-bar" placeholder="Search for books...">
+        <input type="text" name="judul" id="search-input" class="search-bar" autocomplete="off" placeholder="Search for books...">
         <button type="submit" name="cari" class="search-button">Search</button>
       </form>
 
@@ -94,7 +96,7 @@ if (isset($_POST['hapus'])) {
       
       <!-- Lemon Tree -->
       <div class="book-item">
-        <div class="book-cover" style="background-image: url(css/img/lemon-tree.jpg); background-size: cover">
+        <div class="book-cover" style="background-image: url(../css/img/lemon-tree.jpg); background-size: cover">
         </div>
         <div class="book-info">
           <div class="book-title">As Long as the Lemon Trees Grow</div>
@@ -108,7 +110,7 @@ if (isset($_POST['hapus'])) {
       
       <!-- Ronggeng -->
       <div class="book-item">
-        <div class="book-cover" style="background-image: url(css/img/ronggeng.jpg); background-size: cover">
+        <div class="book-cover" style="background-image: url(../css/img/ronggeng.jpg); background-size: cover">
         </div>
         <div class="book-info">
           <div class="book-title">Ronggeng Dukuh Paruk</div>
@@ -122,7 +124,7 @@ if (isset($_POST['hapus'])) {
 
       <!-- Laut -->
       <div class="book-item">
-        <div class="book-cover" style="background-image: url(css/img/laut.jpg); background-size: cover">
+        <div class="book-cover" style="background-image: url(../css/img/laut.jpg); background-size: cover">
         </div>
         <div class="book-info">
           <div class="book-title">Laut Bercerita</div>
@@ -136,7 +138,7 @@ if (isset($_POST['hapus'])) {
 
       <!-- 5 Menara -->
       <div class="book-item">
-        <div class="book-cover" style="background-image: url(css/img/5menara_2.jpg); background-size: cover">
+        <div class="book-cover" style="background-image: url(../css/img/5menara_2.jpg); background-size: cover">
         </div>
         <div class="book-info">
           <div class="book-title">Negeri 5 Menara</div>
@@ -150,7 +152,7 @@ if (isset($_POST['hapus'])) {
       
       <!-- Gadis Kretek -->
       <div class="book-item">
-        <div class="book-cover" style="background-image: url(css/img/kretek.jpeg); background-size: cover">
+        <div class="book-cover" style="background-image: url(../css/img/kretek.jpeg); background-size: cover">
         </div>
         <div class="book-info">
           <div class="book-title">Gadis Kretek</div>
@@ -164,7 +166,7 @@ if (isset($_POST['hapus'])) {
 
       <!-- Perahu Kertas -->
       <div class="book-item">
-        <div class="book-cover" style="background-image: url(css/img/pkertas.jpg); background-size: cover">
+        <div class="book-cover" style="background-image: url(../css/img/pkertas.jpg); background-size: cover">
         </div>
         <div class="book-info">
           <div class="book-title">Perahu Kertas</div>
@@ -178,7 +180,7 @@ if (isset($_POST['hapus'])) {
       
       <!-- Bumi Manusia -->
       <div class="book-item">
-        <div class="book-cover" style="background-image: url(css/img/bumi_manusia.jpg); background-size: cover">
+        <div class="book-cover" style="background-image: url(../css/img/bumi_manusia.jpg); background-size: cover">
         </div>
         <div class="book-info">
           <div class="book-title">Bumi Manusia</div>
@@ -192,7 +194,7 @@ if (isset($_POST['hapus'])) {
       
       <!-- Laskar -->
       <div class="book-item">
-        <div class="book-cover" style="background-image: url(css/img/laskar.jpg); background-size: cover">
+        <div class="book-cover" style="background-image: url(../css/img/laskar.jpg); background-size: cover">
         </div>
         <div class="book-info">
           <div class="book-title">Laskar Pelangi</div>
@@ -206,7 +208,7 @@ if (isset($_POST['hapus'])) {
       
       <!-- Harpot -->
       <div class="book-item">
-        <div class="book-cover" style="background-image: url(css/img/harry.jpg); background-size: cover">
+        <div class="book-cover" style="background-image: url(../css/img/harry.jpg); background-size: cover">
         </div>
         <div class="book-info">
           <div class="book-title">Harry Potter and the Philosopher's Stone</div>
@@ -220,7 +222,7 @@ if (isset($_POST['hapus'])) {
       
       <!-- The Hobbit -->
       <div class="book-item">
-        <div class="book-cover" style="background-image: url(css/img/hobbit.jpg); background-size: cover">
+        <div class="book-cover" style="background-image: url(../css/img/hobbit.jpg); background-size: cover">
         </div>
         <div class="book-info">
           <div class="book-title">The Hobbit</div>
@@ -234,7 +236,7 @@ if (isset($_POST['hapus'])) {
 
       <!-- Pangeran -->
       <div class="book-item">
-        <div class="book-cover" style="background-image: url(css/img/pangeran.jpg); background-size: cover">
+        <div class="book-cover" style="background-image: url(../css/img/pangeran.jpg); background-size: cover">
         </div>
         <div class="book-info">
           <div class="book-title">Pangeran Kecil</div>
@@ -248,7 +250,7 @@ if (isset($_POST['hapus'])) {
       
       <!-- Dilan -->
       <div class="book-item">
-        <div class="book-cover" style="background-image: url(css/img/dilan.jpg); background-size: cover">
+        <div class="book-cover" style="background-image: url(../css/img/dilan.jpg); background-size: cover">
         </div>
         <div class="book-info">
           <div class="book-title">Dilan 1990</div>
@@ -262,7 +264,7 @@ if (isset($_POST['hapus'])) {
       
       <!-- Ayat2 Cinta -->
       <div class="book-item">
-        <div class="book-cover" style="background-image: url(css/img/ayat.jpg); background-size: cover">
+        <div class="book-cover" style="background-image: url(../css/img/ayat.jpg); background-size: cover">
         </div>
         <div class="book-info">
           <div class="book-title">Ayat-Ayat Cinta</div>
@@ -276,7 +278,7 @@ if (isset($_POST['hapus'])) {
       
       <!-- 1984 -->
       <div class="book-item">
-        <div class="book-cover" style="background-image: url(css/img/1984.jpeg); background-size: cover">
+        <div class="book-cover" style="background-image: url(../css/img/1984.jpeg); background-size: cover">
         </div>
         <div class="book-info">
           <div class="book-title">1984</div>
@@ -290,7 +292,7 @@ if (isset($_POST['hapus'])) {
       
       <!-- Mockingbird -->
       <div class="book-item">
-        <div class="book-cover" style="background-image: url(css/img/mockingbird.jpg); background-size: cover">
+        <div class="book-cover" style="background-image: url(../css/img/mockingbird.jpg); background-size: cover">
         </div>
         <div class="book-info">
           <div class="book-title">To Kill a Mockingbird</div>
@@ -304,7 +306,7 @@ if (isset($_POST['hapus'])) {
       
       <!-- Pride -->
       <div class="book-item">
-        <div class="book-cover" style="background-image: url(css/img/pride.jpeg); background-size: cover">
+        <div class="book-cover" style="background-image: url(../css/img/pride.jpeg); background-size: cover">
         </div>
         <div class="book-info">
           <div class="book-title">Pride and Prejudice</div>
@@ -318,7 +320,7 @@ if (isset($_POST['hapus'])) {
       
       <!-- Da Vinci -->
       <div class="book-item">
-        <div class="book-cover" style="background-image: url(css/img/davinci.jpg); background-size: cover">
+        <div class="book-cover" style="background-image: url(../css/img/davinci.jpg); background-size: cover">
         </div>
         <div class="book-info">
           <div class="book-title">The Da Vinci Code</div>
@@ -332,7 +334,7 @@ if (isset($_POST['hapus'])) {
       
       <!-- Hujan -->
       <div class="book-item">
-        <div class="book-cover" style="background-image: url(css/img/hujan.jpeg); background-size: cover">
+        <div class="book-cover" style="background-image: url(../css/img/hujan.jpeg); background-size: cover">
         </div>
         <div class="book-info">
           <div class="book-title">Hujan</div>
@@ -346,25 +348,62 @@ if (isset($_POST['hapus'])) {
     </div>
   </div>
 
+
 <script>
     const searchInput = document.getElementById('search-input');
     const riwayatDropdown = document.getElementById('riwayat-dropdown');
     const searchArea = document.getElementById('search-area');
 
-    <?php if ($showDropdown): ?>
-        if (riwayatDropdown) riwayatDropdown.style.display = 'block';
-        searchInput.focus();
-    <?php endif; ?>
+    // Pastikan dropdown tersembunyi saat halaman dimuat
+    if (riwayatDropdown) {
+        riwayatDropdown.style.display = 'none';
+    }
 
+    // Hanya tampilkan dropdown ketika input difokus
     searchInput.addEventListener('focus', () => {
-        if (riwayatDropdown) riwayatDropdown.style.display = 'block';
-    });
-
-    document.addEventListener('click', function(e) {
-        if (!searchArea.contains(e.target)) {
-            if (riwayatDropdown) riwayatDropdown.style.display = 'none';
+        if (riwayatDropdown) {
+            riwayatDropdown.style.display = 'block';
         }
     });
+
+    // Sembunyikan dropdown ketika klik di luar area search
+    document.addEventListener('click', function(e) {
+        if (!searchArea.contains(e.target)) {
+            if (riwayatDropdown) {
+                riwayatDropdown.style.display = 'none';
+            }
+        }
+    });
+
+    // Optional: Sembunyikan dropdown ketika ESC ditekan
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            if (riwayatDropdown) {
+                riwayatDropdown.style.display = 'none';
+            }
+            searchInput.blur();
+        }
+    });
+
+    // Optional: Jika ingin menampilkan dropdown hanya ketika ada riwayat
+    // dan input tidak kosong
+    searchInput.addEventListener('input', function() {
+        const hasValue = this.value.length > 0;
+        const hasHistory = riwayatDropdown && riwayatDropdown.children.length > 0;
+        
+        if (riwayatDropdown && hasHistory) {
+            riwayatDropdown.style.display = hasValue ? 'block' : 'none';
+        }
+    });
+
+    // Kondisional untuk kasus khusus (jika memang diperlukan)
+    <?php if (isset($_GET['show_history']) && $_GET['show_history'] === 'true'): ?>
+        // Hanya tampilkan jika ada parameter khusus
+        if (riwayatDropdown) {
+            riwayatDropdown.style.display = 'block';
+            searchInput.focus();
+        }
+    <?php endif; ?>
 </script>
 </body>
 </html>

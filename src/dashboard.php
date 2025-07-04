@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+// Inisialisasi Stack
 if (!isset($_SESSION['stack'])) {
     $_SESSION['stack'] = [];
     $_SESSION['top'] = -1;
@@ -11,12 +12,21 @@ function isEmpty() {
 }
 
 function isFull() {
-    $maxStack = 5; // max 5 item sesuai requirement kamu
+    $maxStack = 10;
     return $_SESSION['top'] == $maxStack - 1;
 }
 
 function push($data) {
+    $maxStack = 10;
+
+    // Cek duplikat, hapus dulu biar pindah ke paling atas
+    $existingIndex = array_search($data, $_SESSION['stack']);
+    if ($existingIndex !== false) {
+        pop($existingIndex);
+    }
+
     if (isFull()) {
+        // Geser semua ke kiri
         for ($i = 0; $i < $_SESSION['top']; $i++) {
             $_SESSION['stack'][$i] = $_SESSION['stack'][$i + 1];
         }
@@ -35,32 +45,33 @@ function pop($index) {
     $_SESSION['top']--;
 }
 
+// Variabel kontrol
 $showDropdown = false;
 $hasilFilter = [];
 
+// Proses Pencarian
 if (isset($_POST['cari'])) {
     $judul = trim($_POST['judul']);
     if ($judul !== "") {
         push($judul);
         $showDropdown = true;
 
-        // Load buku.json
         $dataBuku = json_decode(file_get_contents('../data/buku.json'), true);
 
         foreach ($dataBuku as $buku) {
-            if (stripos($buku['judul'], $judul) !== false) {
+            if (stripos($buku['title'], $judul) !== false) {
                 $hasilFilter[] = $buku;
             }
         }
     }
 }
 
+// Hapus Riwayat Per Item
 if (isset($_POST['hapus'])) {
     $index = $_POST['index'];
     pop($index);
     $showDropdown = true;
 }
-
 
 // List buku
 $books = [
@@ -439,22 +450,6 @@ $books = [
                         </div>
                     <?php endif; ?>
 
-                    <?php if (!empty($hasilFilter)) : ?>
-    <h3>Hasil Pencarian:</h3>
-    <div class="container">
-        <?php foreach ($hasilFilter as $buku) : ?>
-            <div class="card">
-                <img src="../css/img/<?php echo $buku['cover']; ?>" alt="cover" width="120">
-
-                <h4><?php echo $buku['judul']; ?></h4>
-                <p><?php echo $buku['genre']; ?></p>
-                <p><?php echo $buku['deskripsi']; ?></p>
-            </div>
-        <?php endforeach; ?>
-    </div>
-<?php endif; ?>
-
-
                     <div class="filters">
                         <select class="filter-select">
                             <option value="all">Semua Genre</option>
@@ -483,6 +478,44 @@ $books = [
                     <?= isset($_POST['judul']) && $_POST['judul'] ? 'Hasil pencarian "' . htmlspecialchars($_POST['judul']) . '"' : 'Semua Buku' ?>
                     <span class="results-count">(<?= count($books) ?> buku)</span>
                 </h2>
+                
+            <?php if (!empty($hasilFilter)): ?>
+                <div class="books-grid" id="books-container">
+                    <?php foreach ($hasilFilter as $book): ?>
+                        <div class="book-card">
+                            <div class="book-cover-container">
+                                <img src="../css/img/<?= $book['cover'] ?>" alt="<?= htmlspecialchars($book['title']) ?>" class="book-cover">
+                                    <?php if (!$book['available']): ?>
+                                        <div class="unavailable-overlay">
+                                            <span class="unavailable-badge">Tidak Tersedia</span>
+                                        </div>
+                                    <?php endif; ?>
+                            </div>
+                            <div class="book-info">
+                                <div class="book-header">
+                                    <h3 class="book-title"><?= htmlspecialchars($book['title']) ?></h3>
+                                        <div class="book-rating">
+                                                <span class="star">⭐</span>
+                                                <span class="rating-value"><?= $book['rating'] ?></span>
+                                        </div>
+                                </div>
+                                <p class="book-author"><?= htmlspecialchars($book['author']) ?></p>
+                                <span class="book-genre"><?= htmlspecialchars($book['genre']) ?></span>
+                                <p class="book-description"><?= htmlspecialchars($book['description']) ?></p>
+                                    <div class="book-meta">
+                                        <span><?= $book['year'] ?></span>
+                                        <span><?= $book['pages'] ?> halaman</span>
+                                    </div>
+                                    <button class="borrow-btn <?= !$book['available'] ? 'disabled' : '' ?>" <?= !$book['available'] ? 'disabled' : '' ?>>
+                                        <?= $book['available'] ? 'Pinjam Buku' : 'Tidak Tersedia' ?>
+                                    </button>
+                                </div>
+                            </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <p>Tidak ditemukan hasil untuk pencarian ini.</p>
+            <?php endif; ?>
             </div>
 
             <!-- Books Grid -->

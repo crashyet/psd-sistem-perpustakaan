@@ -1,8 +1,7 @@
 <?php
 session_start();
 
-$maxStack = 5;
-
+// Inisialisasi Stack
 if (!isset($_SESSION['stack'])) {
     $_SESSION['stack'] = [];
     $_SESSION['top'] = -1;
@@ -12,11 +11,22 @@ function isEmpty() {
     return $_SESSION['top'] == -1;
 }
 
-function push($data) {
-    global $maxStack;
+function isFull() {
+    $maxStack = 10;
+    return $_SESSION['top'] == $maxStack - 1;
+}
 
-    if ($_SESSION['top'] == $maxStack - 1) {
-        // Geser semua data ke kiri, data paling lama dibuang
+function push($data) {
+    $maxStack = 10;
+
+    // Cek duplikat, hapus dulu biar pindah ke paling atas
+    $existingIndex = array_search($data, $_SESSION['stack']);
+    if ($existingIndex !== false) {
+        pop($existingIndex);
+    }
+
+    if (isFull()) {
+        // Geser semua ke kiri
         for ($i = 0; $i < $_SESSION['top']; $i++) {
             $_SESSION['stack'][$i] = $_SESSION['stack'][$i + 1];
         }
@@ -35,21 +45,35 @@ function pop($index) {
     $_SESSION['top']--;
 }
 
+// Variabel kontrol
 $showDropdown = false;
+$hasilFilter = [];
 
+// Proses Pencarian
 if (isset($_POST['cari'])) {
     $judul = trim($_POST['judul']);
     if ($judul !== "") {
         push($judul);
+        $showDropdown = true;
+
+        $dataBuku = json_decode(file_get_contents('../data/buku.json'), true);
+
+        foreach ($dataBuku as $buku) {
+            if (stripos($buku['title'], $judul) !== false) {
+                $hasilFilter[] = $buku;
+            }
+        }
     }
 }
 
+// Hapus Riwayat Per Item
 if (isset($_POST['hapus'])) {
     $index = $_POST['index'];
     pop($index);
     $showDropdown = true;
 }
 ?>
+
 
 <!DOCTYPE html>
 <html>

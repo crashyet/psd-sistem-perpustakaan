@@ -1,110 +1,218 @@
 [
   {
-    "judul": "As Long as the Lemon Trees Grow",
+    "id": 1,
+    "title": "As Long as the Lemon Trees Grow",
+    "author": "Zoulfa Katouh",
     "genre": "Fiksi Historis Perang Romansa",
-    "deskripsi": "Seorang mahasiswi farmasi yang harus bekerja di rumah sakit penuh korban perang, dihantui oleh Khawf (ketakutan).",
-    "cover": "lemon-tree.jpg"
+    "description": "Seorang mahasiswi farmasi yang tiba-tiba harus bekerja sebagai dokter darurat di rumah sakit yang penuh korban perang. Di tengah keputusasaan, ia dihantui oleh Khawf (ketakutan), sebuah personifikasi halusinasi yang mendorongnya untuk melarikan diri dari negaranya...",
+    "cover": "lemon-tree.jpg",
+    "rating": 4.5,
+    "year": 2022,
+    "pages": 432,
+    "available": true
   },
   {
-    "judul": "Ronggeng Dukuh Paruk",
+    "id": 2,
+    "title": "Ronggeng Dukuh Paruk",
+    "author": "Ahmad Tohari",
     "genre": "Fiksi Sastra Tragedi",
-    "deskripsi": "Kehidupan Srintil, penari ronggeng yang terjebak antara tradisi, kemiskinan, dan eksploitasi.",
-    "cover": "ronggeng.jpg"
+    "description": "Dukuh Paruk, sebuah desa terpencil di Jawa, sangat bergantung pada tradisi ronggeng. Srintil, seorang gadis muda yang memiliki bakat menari, diyakini sebagai pewaris tradisi ronggeng dan diangkat menjadi ronggeng. Kehadirannya membawa kebahagiaan dan kebanggaan bagi desa, tetapi juga membawa perubahan dalam kehidupan Srintil.",
+    "cover": "ronggeng.jpg",
+    "rating": 4.8,
+    "year": 1982,
+    "pages": 368,
+    "available": true
   },
   {
-    "judul": "Laut Bercerita",
+    "id": 3,
+    "title": "Laut Bercerita",
+    "author": "Leila S. Chudori",
     "genre": "Fiksi Sastra Drama",
-    "deskripsi": "Aktivis Laut diculik masa Orde Baru, kisah perjuangan dan keteguhan hati.",
-    "cover": "laut.jpg"
+    "description": "Kisah seorang aktivis mahasiswa bernama Laut yang diculik dan menghilang secara paksa pada masa Orde Baru. Novel ini menggambarkan perjuangan, pengorbanan, dan keteguhan hati dalam memperjuangkan kebenaran.",
+    "cover": "laut.jpg",
+    "rating": 4.7,
+    "year": 2017,
+    "pages": 394,
+    "available": false
   },
   {
-    "judul": "Negeri 5 Menara",
+    "id": 4,
+    "title": "Negeri 5 Menara",
+    "author": "Ahmad Fuadi",
     "genre": "Inspirasi Coming-of-age",
-    "deskripsi": "Santri Pondok Madura berjuang meraih mimpi dengan prinsip Man Jadda Wa Jadda.",
-    "cover": "5menara_2.jpg"
+    "description": "Kisah perjuangan sekelompok santri di Pondok Madura yang memegang prinsip \"Man Jadda Wa Jadda\" (Siapa yang bersungguh-sungguh akan berhasil) untuk meraih mimpi mereka.",
+    "cover": "5menara_2.jpg",
+    "rating": 4.6,
+    "year": 2009,
+    "pages": 424,
+    "available": true
   },
   {
-    "judul": "Harry Potter and the Philosopher's Stone",
+    "id": 5,
+    "title": "Harry Potter and the Philosopher's Stone",
+    "author": "J.K. Rowling",
     "genre": "Fantasi Petualangan",
-    "deskripsi": "Harry Potter menemukan bahwa ia adalah penyihir dan melalui petualangannya di Sekolah Sihir Hogwarts.",
-    "cover": "harry.jpg"
+    "description": "Harry Potter menemukan bahwa ia adalah penyihir dan memulai petualangannya di Sekolah Sihir Hogwarts.",
+    "cover": "harry.jpg",
+    "rating": 4.9,
+    "year": 1997,
+    "pages": 223,
+    "available": true
   },
   {
-    "judul": "1984",
+    "id": 6,
+    "title": "1984",
+    "author": "George Orwell",
     "genre": "Fiksi Distopia",
-    "deskripsi": "Dunia di bawah pengawasan ketat Big Brother di mana kebebasan individu ditekan dan sejarah dimanipulasi.",
-    "cover": "1984.jpeg"
+    "description": "Dunia di bawah pengawasan ketat Big Brother di mana kebebasan individu ditekan dan sejarah dimanipulasi.",
+    "cover": "1984.jpeg",
+    "rating": 4.8,
+    "year": 1949,
+    "pages": 328,
+    "available": false
   },
   {
-    "judul": "Gadis Kretek",
+    "id": 7,
+    "title": "Gadis Kretek",
+    "author": "Ratih Kumala",
     "genre": "Fiksi Historis Romansa",
-    "deskripsi": "Kisah Jeng Yah, perempuan yang terlibat di industri kretek Indonesia.",
-    "cover": "kretek.jpeg"
+    "description": "Mengisahkan tentang Jeng Yah, seorang perempuan yang terlibat dalam industri kretek di Indonesia.",
+    "cover": "kretek.jpeg",
+    "rating": 4.3,
+    "year": 2012,
+    "pages": 256,
+    "available": true
   },
   {
-    "judul": "Perahu Kertas",
+    "id": 8,
+    "title": "Perahu Kertas",
+    "author": "Dee Lestari",
     "genre": "Romansa Drama",
-    "deskripsi": "Kugy dan Keenan saling menemukan cinta dan arti kehidupan.",
-    "cover": "pkertas.jpg"
+    "description": "Kugy dan Keenan, dua orang dengan impian berbeda, saling menemukan cinta dan arti kehidupan.",
+    "cover": "pkertas.jpg",
+    "rating": 4.5,
+    "year": 2009,
+    "pages": 444,
+    "available": true
   },
   {
-    "judul": "Bumi Manusia",
+    "id": 9,
+    "title": "Bumi Manusia",
+    "author": "Pramoedya Ananta Toer",
     "genre": "Fiksi Historis",
-    "deskripsi": "Minke dan Nyai Ontosoroh di era kolonial Hindia Belanda.",
-    "cover": "bumi_manusia.jpg"
+    "description": "Kisah Minke, pemuda Jawa yang bersekolah di HBS, berkenalan dengan Nyai Ontosoroh, perempuan pribumi yang berhasil menjadi pengusaha sukses di era kolonial.",
+    "cover": "bumi_manusia.jpg",
+    "rating": 4.9,
+    "year": 1980,
+    "pages": 535,
+    "available": true
   },
   {
-    "judul": "Laskar Pelangi",
+    "id": 10,
+    "title": "Laskar Pelangi",
+    "author": "Andrea Hirata",
     "genre": "Drama Inspiratif",
-    "deskripsi": "10 anak miskin di Belitung bersekolah penuh keterbatasan.",
-    "cover": "laskar.jpg"
+    "description": "Kisah persahabatan 10 anak dari keluarga miskin di Belitung yang bersekolah di SD Muhammadiyah dengan segala keterbatasannya.",
+    "cover": "laskar.jpg",
+    "rating": 4.8,
+    "year": 2005,
+    "pages": 529,
+    "available": true
   },
   {
-    "judul": "The Hobbit",
+    "id": 11,
+    "title": "The Hobbit",
+    "author": "J.R.R. Tolkien",
     "genre": "Fantasi Petualangan",
-    "deskripsi": "Bilbo Baggins ikut dalam perjalanan tak terduga untuk merebut kembali harta karun yang dijaga oleh naga Smaug.",
-    "cover": "hobbit.jpg"
+    "description": "Bilbo Baggins ikut dalam perjalanan tak terduga untuk merebut kembali harta karun yang dijaga oleh naga Smaug.",
+    "cover": "hobbit.jpg",
+    "rating": 4.7,
+    "year": 1937,
+    "pages": 310,
+    "available": true
   },
   {
-    "judul": "Pangeran Kecil",
+    "id": 12,
+    "title": "Pangeran Kecil",
+    "author": "Antoine de Saint-Exupéry",
     "genre": "Filosofi Anak-anak",
-    "deskripsi": "Seorang pilot yang terdampar di gurun bertemu dengan pangeran kecil dari asteroid lain yang mengajarkannya tentang arti kehidupan.",
-    "cover": "pangeran.jpg"
+    "description": "Seorang pilot yang terdampar di gurun bertemu dengan pangeran kecil dari asteroid lain yang mengajarkannya tentang arti kehidupan.",
+    "cover": "pangeran.jpg",
+    "rating": 4.9,
+    "year": 1943,
+    "pages": 96,
+    "available": true
   },
   {
-    "judul": "Dilan 1990",
+    "id": 13,
+    "title": "Dilan 1990",
+    "author": "Pidi Baiq",
     "genre": "Romansa Muda",
-    "deskripsi": "Kisah cinta antara Milea dan Dilan di Bandung tahun 1990-an dengan segala romansa dan keunikan karakter Dilan.",
-    "cover": "dilan.jpg"
+    "description": "Kisah cinta Milea dan Dilan di Bandung tahun 1990-an dengan segala romansa dan keunikan karakter Dilan.",
+    "cover": "dilan.jpg",
+    "rating": 4.4,
+    "year": 2014,
+    "pages": 332,
+    "available": true
   },
   {
-    "judul": "Ayat-Ayat Cinta",
+    "id": 14,
+    "title": "Ayat-Ayat Cinta",
+    "author": "Habiburrahman El Shirazy",
     "genre": "Romansa Religius",
-    "deskripsi": "Kisah cinta Fahri, mahasiswa Indonesia di Kairo yang diuji dengan berbagai cobaan dan konflik.",
-    "cover" : "ayat.jpg"
+    "description": "Kisah cinta Fahri, mahasiswa Indonesia di Kairo, yang diuji dengan berbagai cobaan dan konflik.",
+    "cover": "ayat.jpg",
+    "rating": 4.5,
+    "year": 2004,
+    "pages": 418,
+    "available": true
   },
   {
-    "judul": "To Kill a Mockingbird",
+    "id": 15,
+    "title": "To Kill a Mockingbird",
+    "author": "Harper Lee",
     "genre": "Drama Hukum",
-    "deskripsi": "Kisah tentang keadilan dan rasisme di Amerika Selatan melalui mata Scout Finch yang masih kecil.",
-    "cover": "mockingbird.jpg"
+    "description": "Kisah tentang keadilan dan rasisme di Amerika Selatan melalui mata Scout Finch yang masih kecil.",
+    "cover": "mockingbird.jpg",
+    "rating": 4.8,
+    "year": 1960,
+    "pages": 281,
+    "available": true
   },
   {
-    "judul": "Pride and Prejudice",
+    "id": 16,
+    "title": "Pride and Prejudice",
+    "author": "Jane Austen",
     "genre": "Romansa Klasik",
-    "deskripsi": "Kisah Elizabeth Bennet dan Fitzwilliam Darcy yang penuh dengan prasangka dan kelas sosial.",
-    "cover": "pride.jpeg"
+    "description": "Kisah Elizabeth Bennet dan Fitzwilliam Darcy dalam dunia masyarakat Inggris abad ke-19 yang penuh dengan prasangka dan kelas sosial.",
+    "cover": "pride.jpeg",
+    "rating": 4.7,
+    "year": 1813,
+    "pages": 279,
+    "available": true
   },
   {
-    "judul": "The Da Vinci Code",
+    "id": 17,
+    "title": "The Da Vinci Code",
+    "author": "Dan Brown",
     "genre": "Misteri Thriller",
-    "deskripsi": "Robert Langdon memecahkan kode rahasia yang bisa mengubah pandangan dunia tentang Yesus Kristus.",
-    "cover": "davinci.jpg"
+    "description": "Robert Langdon memecahkan kode rahasia yang bisa mengubah pandangan dunia tentang Yesus Kristus.",
+    "cover": "davinci.jpg",
+    "rating": 4.2,
+    "year": 2003,
+    "pages": 454,
+    "available": false
   },
   {
-    "judul": "Hujan",
+    "id": 18,
+    "title": "Hujan",
+    "author": "Tere Liye",
     "genre": "Fiksi Ilmiah",
-    "deskripsi": "Kisah Lail dan Esok di masa depan ketika hujan menjadi bencana yang mematkan dan mengubah peradaban manusia.",
-    "cover": "hujan.jpeg"
+    "description": "Kisah Lail dan Esok di masa depan ketika hujan menjadi bencana yang mematikan dan mengubah peradaban manusia.",
+    "cover": "hujan.jpeg",
+    "rating": 4.6,
+    "year": 2016,
+    "pages": 320,
+    "available": true
   }
 ]

@@ -74,224 +74,7 @@ if (isset($_POST['hapus'])) {
 }
 
 // List buku
-$books = [
-    [
-        'id' => 1,
-        'title' => 'As Long as the Lemon Trees Grow',
-        'author' => 'Zoulfa Katouh',
-        'genre' => 'Fiksi Historis Perang Romansa',
-        'description' => 'Seorang mahasiswi farmasi yang tiba-tiba harus bekerja sebagai dokter darurat di rumah sakit yang penuh korban perang. Di tengah keputusasaan, ia dihantui oleh Khawf (ketakutan), sebuah personifikasi halusinasi yang mendorongnya untuk melarikan diri dari negaranya...',
-        'cover' => '../css/img/lemon-tree.jpg',
-        'rating' => 4.5,
-        'year' => 2022,
-        'pages' => 432,
-        'available' => true
-    ],
-    [
-        'id' => 2,
-        'title' => 'Ronggeng Dukuh Paruk',
-        'author' => 'Ahmad Tohari',
-        'genre' => 'Fiksi Sastra Tragedi',
-        'description' => 'Dukuh Paruk, sebuah desa terpencil di Jawa, sangat bergantung pada tradisi ronggeng. Srintil, seorang gadis muda yang memiliki bakat menari, diyakini sebagai pewaris tradisi ronggeng dan diangkat menjadi ronggeng. Kehadirannya membawa kebahagiaan dan kebanggaan bagi desa, tetapi juga membawa perubahan dalam kehidupan Srintil.',
-        'cover' => '../css/img/ronggeng.jpg',
-        'rating' => 4.8,
-        'year' => 1982,
-        'pages' => 368,
-        'available' => true
-    ],
-    [
-        'id' => 3,
-        'title' => 'Laut Bercerita',
-        'author' => 'Leila S. Chudori',
-        'genre' => 'Fiksi Sastra Drama',
-        'description' => 'Kisah seorang aktivis mahasiswa bernama Laut yang diculik dan menghilang secara paksa pada masa Orde Baru. Novel ini menggambarkan perjuangan, pengorbanan, dan keteguhan hati dalam memperjuangkan kebenaran.',
-        'cover' => '../css/img/laut.jpg',
-        'rating' => 4.7,
-        'year' => 2017,
-        'pages' => 394,
-        'available' => false
-    ],
-    [
-        'id' => 4,
-        'title' => 'Negeri 5 Menara',
-        'author' => 'Ahmad Fuadi',
-        'genre' => 'Inspirasi Coming-of-age',
-        'description' => 'Kisah perjuangan sekelompok santri di Pondok Madura yang memegang prinsip "Man Jadda Wa Jadda" (Siapa yang bersungguh-sungguh akan berhasil) untuk meraih mimpi mereka.',
-        'cover' => '../css/img/5menara_2.jpg',
-        'rating' => 4.6,
-        'year' => 2009,
-        'pages' => 424,
-        'available' => true
-    ],
-    [
-        'id' => 5,
-        'title' => 'Harry Potter and the Philosopher\'s Stone',
-        'author' => 'J.K. Rowling',
-        'genre' => 'Fantasi Petualangan',
-        'description' => 'Harry Potter menemukan bahwa ia adalah penyihir dan memulai petualangannya di Sekolah Sihir Hogwarts.',
-        'cover' => '../css/img/harry.jpg',
-        'rating' => 4.9,
-        'year' => 1997,
-        'pages' => 223,
-        'available' => true
-    ],
-    [
-        'id' => 6,
-        'title' => '1984',
-        'author' => 'George Orwell',
-        'genre' => 'Fiksi Distopia',
-        'description' => 'Dunia di bawah pengawasan ketat Big Brother di mana kebebasan individu ditekan dan sejarah dimanipulasi.',
-        'cover' => '../css/img/1984.jpeg',
-        'rating' => 4.8,
-        'year' => 1949,
-        'pages' => 328,
-        'available' => false
-    ],
-    [
-        'id' => 7,
-        'title' => 'Gadis Kretek',
-        'author' => 'Ratih Kumala',
-        'genre' => 'Fiksi Historis Romansa',
-        'description' => 'Mengisahkan tentang Jeng Yah, seorang perempuan yang terlibat dalam industri kretek di Indonesia.',
-        'cover' => '../css/img/kretek.jpeg',
-        'rating' => 4.3,
-        'year' => 2012,
-        'pages' => 256,
-        'available' => true
-    ],
-    [
-        'id' => 8,
-        'title' => 'Perahu Kertas',
-        'author' => 'Dee Lestari',
-        'genre' => 'Romansa Drama',
-        'description' => 'Kugy dan Keenan, dua orang dengan impian berbeda, saling menemukan cinta dan arti kehidupan.',
-        'cover' => '../css/img/pkertas.jpg',
-        'rating' => 4.5,
-        'year' => 2009,
-        'pages' => 444,
-        'available' => true
-    ],
-    [
-        'id' => 9,
-        'title' => 'Bumi Manusia',
-        'author' => 'Pramoedya Ananta Toer',
-        'genre' => 'Fiksi Historis',
-        'description' => 'Kisah Minke, pemuda Jawa yang bersekolah di HBS, berkenalan dengan Nyai Ontosoroh, perempuan pribumi yang berhasil menjadi pengusaha sukses di era kolonial.',
-        'cover' => '../css/img/bumi_manusia.jpg',
-        'rating' => 4.9,
-        'year' => 1980,
-        'pages' => 535,
-        'available' => true
-    ],
-    [
-        'id' => 10,
-        'title' => 'Laskar Pelangi',
-        'author' => 'Andrea Hirata',
-        'genre' => 'Drama Inspiratif',
-        'description' => 'Kisah persahabatan 10 anak dari keluarga miskin di Belitung yang bersekolah di SD Muhammadiyah dengan segala keterbatasannya.',
-        'cover' => '../css/img/laskar.jpg',
-        'rating' => 4.8,
-        'year' => 2005,
-        'pages' => 529,
-        'available' => true
-    ],
-    [
-        'id' => 11,
-        'title' => 'The Hobbit',
-        'author' => 'J.R.R. Tolkien',
-        'genre' => 'Fantasi Petualangan',
-        'description' => 'Bilbo Baggins ikut dalam perjalanan tak terduga untuk merebut kembali harta karun yang dijaga oleh naga Smaug.',
-        'cover' => '../css/img/hobbit.jpg',
-        'rating' => 4.7,
-        'year' => 1937,
-        'pages' => 310,
-        'available' => true
-    ],
-    [
-        'id' => 12,
-        'title' => 'Pangeran Kecil',
-        'author' => 'Antoine de Saint-Exupéry',
-        'genre' => 'Filosofi Anak-anak',
-        'description' => 'Seorang pilot yang terdampar di gurun bertemu dengan pangeran kecil dari asteroid lain yang mengajarkannya tentang arti kehidupan.',
-        'cover' => '../css/img/pangeran.jpg',
-        'rating' => 4.9,
-        'year' => 1943,
-        'pages' => 96,
-        'available' => true
-    ],
-    [
-        'id' => 13,
-        'title' => 'Dilan 1990',
-        'author' => 'Pidi Baiq',
-        'genre' => 'Romansa Muda',
-        'description' => 'Kisah cinta Milea dan Dilan di Bandung tahun 1990-an dengan segala romansa dan keunikan karakter Dilan.',
-        'cover' => '../css/img/dilan.jpg',
-        'rating' => 4.4,
-        'year' => 2014,
-        'pages' => 332,
-        'available' => true
-    ],
-    [
-        'id' => 14,
-        'title' => 'Ayat-Ayat Cinta',
-        'author' => 'Habiburrahman El Shirazy',
-        'genre' => 'Romansa Religius',
-        'description' => 'Kisah cinta Fahri, mahasiswa Indonesia di Kairo, yang diuji dengan berbagai cobaan dan konflik.',
-        'cover' => '../css/img/ayat.jpg',
-        'rating' => 4.5,
-        'year' => 2004,
-        'pages' => 418,
-        'available' => true
-    ],
-    [
-        'id' => 15,
-        'title' => 'To Kill a Mockingbird',
-        'author' => 'Harper Lee',
-        'genre' => 'Drama Hukum',
-        'description' => 'Kisah tentang keadilan dan rasisme di Amerika Selatan melalui mata Scout Finch yang masih kecil.',
-        'cover' => '../css/img/mockingbird.jpg',
-        'rating' => 4.8,
-        'year' => 1960,
-        'pages' => 281,
-        'available' => true
-    ],
-    [
-        'id' => 16,
-        'title' => 'Pride and Prejudice',
-        'author' => 'Jane Austen',
-        'genre' => 'Romansa Klasik',
-        'description' => 'Kisah Elizabeth Bennet dan Fitzwilliam Darcy dalam dunia masyarakat Inggris abad ke-19 yang penuh dengan prasangka dan kelas sosial.',
-        'cover' => '../css/img/pride.jpeg',
-        'rating' => 4.7,
-        'year' => 1813,
-        'pages' => 279,
-        'available' => true
-    ],
-    [
-        'id' => 17,
-        'title' => 'The Da Vinci Code',
-        'author' => 'Dan Brown',
-        'genre' => 'Misteri Thriller',
-        'description' => 'Robert Langdon memecahkan kode rahasia yang bisa mengubah pandangan dunia tentang Yesus Kristus.',
-        'cover' => '../css/img/davinci.jpg',
-        'rating' => 4.2,
-        'year' => 2003,
-        'pages' => 454,
-        'available' => false
-    ],
-    [
-        'id' => 18,
-        'title' => 'Hujan',
-        'author' => 'Tere Liye',
-        'genre' => 'Fiksi Ilmiah',
-        'description' => 'Kisah Lail dan Esok di masa depan ketika hujan menjadi bencana yang mematikan dan mengubah peradaban manusia.',
-        'cover' => '../css/img/hujan.jpeg',
-        'rating' => 4.6,
-        'year' => 2016,
-        'pages' => 320,
-        'available' => true
-    ]
-];
+$books = json_decode(file_get_contents('../data/buku.json'), true);
 ?>
 
 <!DOCTYPE html>
@@ -422,6 +205,7 @@ $books = [
                                 id="search-input" 
                                 class="search-input" 
                                 placeholder="Cari buku, penulis, atau genre..."
+                                autocomplete="off"
                                 value="<?= isset($_POST['judul']) ? htmlspecialchars($_POST['judul']) : '' ?>"
                             >
                         </div>
@@ -476,46 +260,46 @@ $books = [
             <div class="results-header">
                 <h2>
                     <?= isset($_POST['judul']) && $_POST['judul'] ? 'Hasil pencarian "' . htmlspecialchars($_POST['judul']) . '"' : 'Semua Buku' ?>
-                    <span class="results-count">(<?= count($books) ?> buku)</span>
+                    <span class="results-count">(<?= count($hasilFilter) ?> buku)</span>
                 </h2>
                 
-            <?php if (!empty($hasilFilter)): ?>
-                <div class="books-grid" id="books-container">
-                    <?php foreach ($hasilFilter as $book): ?>
-                        <div class="book-card">
-                            <div class="book-cover-container">
-                                <img src="../css/img/<?= $book['cover'] ?>" alt="<?= htmlspecialchars($book['title']) ?>" class="book-cover">
-                                    <?php if (!$book['available']): ?>
-                                        <div class="unavailable-overlay">
-                                            <span class="unavailable-badge">Tidak Tersedia</span>
-                                        </div>
-                                    <?php endif; ?>
-                            </div>
-                            <div class="book-info">
-                                <div class="book-header">
-                                    <h3 class="book-title"><?= htmlspecialchars($book['title']) ?></h3>
-                                        <div class="book-rating">
-                                                <span class="star">⭐</span>
-                                                <span class="rating-value"><?= $book['rating'] ?></span>
-                                        </div>
+                <?php if (!empty($hasilFilter)): ?>
+                    <div class="books-grid" id="books-container">
+                        <?php foreach ($hasilFilter as $book): ?>
+                            <div class="book-card">
+                                <div class="book-cover-container">
+                                    <img src="<?= $book['cover'] ?>" alt="<?= htmlspecialchars($book['title']) ?>" class="book-cover">
+                                        <?php if (!$book['available']): ?>
+                                            <div class="unavailable-overlay">
+                                                <span class="unavailable-badge">Tidak Tersedia</span>
+                                            </div>
+                                        <?php endif; ?>
                                 </div>
-                                <p class="book-author"><?= htmlspecialchars($book['author']) ?></p>
-                                <span class="book-genre"><?= htmlspecialchars($book['genre']) ?></span>
-                                <p class="book-description"><?= htmlspecialchars($book['description']) ?></p>
-                                    <div class="book-meta">
-                                        <span><?= $book['year'] ?></span>
-                                        <span><?= $book['pages'] ?> halaman</span>
+                                <div class="book-info">
+                                    <div class="book-header">
+                                        <h3 class="book-title"><?= htmlspecialchars($book['title']) ?></h3>
+                                            <div class="book-rating">
+                                                    <span class="star">⭐</span>
+                                                    <span class="rating-value"><?= $book['rating'] ?></span>
+                                            </div>
                                     </div>
-                                    <button class="borrow-btn <?= !$book['available'] ? 'disabled' : '' ?>" <?= !$book['available'] ? 'disabled' : '' ?>>
-                                        <?= $book['available'] ? 'Pinjam Buku' : 'Tidak Tersedia' ?>
-                                    </button>
+                                    <p class="book-author"><?= htmlspecialchars($book['author']) ?></p>
+                                    <span class="book-genre"><?= htmlspecialchars($book['genre']) ?></span>
+                                    <p class="book-description"><?= htmlspecialchars($book['description']) ?></p>
+                                        <div class="book-meta">
+                                            <span><?= $book['year'] ?></span>
+                                            <span><?= $book['pages'] ?> halaman</span>
+                                        </div>
+                                        <button class="borrow-btn <?= !$book['available'] ? 'disabled' : '' ?>" <?= !$book['available'] ? 'disabled' : '' ?>>
+                                            <?= $book['available'] ? 'Pinjam Buku' : 'Tidak Tersedia' ?>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php else: ?>
-                <p>Tidak ditemukan hasil untuk pencarian ini.</p>
-            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <p>Tidak ditemukan hasil untuk pencarian ini.</p>
+                <?php endif; ?>
             </div>
 
             <!-- Books Grid -->
@@ -562,32 +346,29 @@ $books = [
 
     <script>
         const searchInput = document.getElementById('search-input');
-        const searchHistory = document.getElementById('search-history');
+        const riwayatDropdown = document.getElementById('search-history');
         const searchArea = document.getElementById('search-area');
 
-        <?php if ($showDropdown): ?>
-            if (searchHistory) searchHistory.style.display = 'block';
-            searchInput.focus();
-        <?php endif; ?>
+        // Pastikan dropdown tersembunyi saat halaman dimuat
+        if (riwayatDropdown) {
+            riwayatDropdown.style.display = 'none';
+        }
 
+        // Tampilkan dropdown ketika input difokus
         searchInput.addEventListener('focus', () => {
-            if (searchHistory) searchHistory.style.display = 'block';
-        });
-
-        document.addEventListener('click', function(e) {
-            if (!searchArea.contains(e.target)) {
-                if (searchHistory) searchHistory.style.display = 'none';
+            if (riwayatDropdown) {
+                riwayatDropdown.style.display = 'block';
             }
         });
 
-        function closeHistory() {
-            if (searchHistory) searchHistory.style.display = 'none';
-        }
-
-        function selectHistory(query) {
-            searchInput.value = query;
-            if (searchHistory) searchHistory.style.display = 'none';
-        }
+        // Sembunyikan dropdown ketika klik di luar area search
+        document.addEventListener('click', function(e) {
+            if (!searchArea.contains(e.target)) {
+                if (riwayatDropdown) {
+                    riwayatDropdown.style.display = 'none';
+                }
+            }
+        });
 
         // View toggle functionality
         const viewButtons = document.querySelectorAll('.view-btn');

@@ -1,0 +1,5 @@
+# Modul
+node_modules/
+
+# Data user
+data/users.json

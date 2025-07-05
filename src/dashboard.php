@@ -1,12 +1,18 @@
 <?php
 session_start();
 
-// Inisialisasi Stack
+// Inisialisasi Stack untuk riwayat pencarian
 if (!isset($_SESSION['stack'])) {
     $_SESSION['stack'] = [];
     $_SESSION['top'] = -1;
 }
 
+// Inisialisasi Queue untuk antrian buku
+if (!isset($_SESSION['book_queue'])) {
+    $_SESSION['book_queue'] = [];
+}
+
+// Fungsi Stack untuk riwayat pencarian
 function isEmpty() {
     return $_SESSION['top'] == -1;
 }
@@ -18,13 +24,11 @@ function isFull() {
 
 function push($data) {
     $maxStack = 10;
-
     // Cek duplikat, hapus dulu biar pindah ke paling atas
     $existingIndex = array_search($data, $_SESSION['stack']);
     if ($existingIndex !== false) {
         pop($existingIndex);
     }
-
     if (isFull()) {
         // Geser semua ke kiri
         for ($i = 0; $i < $_SESSION['top']; $i++) {
@@ -45,36 +49,108 @@ function pop($index) {
     $_SESSION['top']--;
 }
 
+// Fungsi Queue untuk antrian buku
+function addToQueue($bookId, $userId = 'current_user') {
+    $queueItem = [
+        'id' => uniqid(),
+        'book_id' => $bookId,
+        'user_id' => $userId,
+        'timestamp' => time(),
+        'status' => 'waiting'
+    ];
+    
+    // Cek apakah buku sudah ada dalam antrian user
+    foreach ($_SESSION['book_queue'] as $item) {
+        if ($item['book_id'] == $bookId && $item['user_id'] == $userId) {
+            return false; // Sudah ada dalam antrian
+        }
+    }
+    
+    $_SESSION['book_queue'][] = $queueItem;
+    return true;
+}
+
+function getQueuePosition($bookId, $userId = 'current_user') {
+    $position = 1;
+    foreach ($_SESSION['book_queue'] as $item) {
+        if ($item['book_id'] == $bookId) {
+            if ($item['user_id'] == $userId) {
+                return $position;
+            }
+            if ($item['status'] == 'waiting') {
+                $position++;
+            }
+        }
+    }
+    return 0;
+}
+
+function getQueueCount($bookId) {
+    $count = 0;
+    foreach ($_SESSION['book_queue'] as $item) {
+        if ($item['book_id'] == $bookId && $item['status'] == 'waiting') {
+            $count++;
+        }
+    }
+    return $count;
+}
+
 // Variabel kontrol
 $showDropdown = false;
 $hasilFilter = [];
+$message = '';
+$messageType = '';
 
-// Proses Pencarian
-if (isset($_POST['cari'])) {
-    $judul = trim($_POST['judul']);
-    if ($judul !== "") {
-        push($judul);
-        $showDropdown = true;
+// Load data buku
+$books = json_decode(file_get_contents('../data/buku.json'), true);
 
-        $dataBuku = json_decode(file_get_contents('../data/buku.json'), true);
-
-        foreach ($dataBuku as $buku) {
-            if (stripos($buku['title'], $judul) !== false) {
-                $hasilFilter[] = $buku;
+// Proses form submissions
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Proses Pencarian
+    if (isset($_POST['cari'])) {
+        $judul = trim($_POST['judul']);
+        if ($judul !== "") {
+            push($judul);
+            $showDropdown = true;
+            foreach ($books as $buku) {
+                if (stripos($buku['title'], $judul) !== false) {
+                    $hasilFilter[] = $buku;
+                }
             }
+        }
+    }
+    
+    // Hapus Riwayat Per Item
+    if (isset($_POST['hapus'])) {
+        $index = $_POST['index'];
+        pop($index);
+        $showDropdown = true;
+    }
+    
+    // Tambah ke Antrian
+    if (isset($_POST['add_to_queue'])) {
+        $bookId = $_POST['book_id'];
+        if (addToQueue($bookId)) {
+            $message = 'Buku berhasil ditambahkan ke antrian!';
+            $messageType = 'success';
+        } else {
+            $message = 'Buku sudah ada dalam antrian Anda!';
+            $messageType = 'error';
         }
     }
 }
 
-// Hapus Riwayat Per Item
-if (isset($_POST['hapus'])) {
-    $index = $_POST['index'];
-    pop($index);
-    $showDropdown = true;
-}
-
-// List buku
-$books = json_decode(file_get_contents('../data/buku.json'), true);
+// Statistik untuk dashboard
+$totalBooks = count($books);
+$availableBooks = count(array_filter($books, function($book) { return $book['available']; }));
+$unavailableBooks = $totalBooks - $availableBooks;
+$totalQueue = count($_SESSION['book_queue']);
+$userQueue = count(array_filter($_SESSION['book_queue'], function($item) { 
+    return $item['user_id'] == 'current_user'; 
+}));
+$readyQueue = count(array_filter($_SESSION['book_queue'], function($item) { 
+    return $item['status'] == 'ready'; 
+}));
 ?>
 
 <!DOCTYPE html>
@@ -82,7 +158,7 @@ $books = json_decode(file_get_contents('../data/buku.json'), true);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perpustakaan Digital - Dashboard</title>
+    <title>Novel Grove - Dashboard</title>
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -92,10 +168,16 @@ $books = json_decode(file_get_contents('../data/buku.json'), true);
             <div class="header-left">
                 <div class="logo">
                     <div class="logo-icon">📚</div>
-                    <h1>Perpustakaan Digital</h1>
+                    <h1>Novel Grove</h1>
                 </div>
             </div>
             <div class="header-right">
+                <?php if ($userQueue > 0): ?>
+                    <div class="queue-notification">
+                        <span class="queue-badge"><?= $userQueue ?></span>
+                        <span class="queue-text">Antrian</span>
+                    </div>
+                <?php endif; ?>
                 <button class="notification-btn">🔔</button>
                 <div class="user-menu">
                     <div class="user-avatar">LS</div>
@@ -110,7 +192,7 @@ $books = json_decode(file_get_contents('../data/buku.json'), true);
         <!-- Sidebar -->
         <aside class="sidebar">
             <nav class="sidebar-nav">
-                <a href="#" class="nav-item active">
+                <a href="dashboard.php" class="nav-item active">
                     <span class="nav-icon">🏠</span>
                     <span class="nav-text">Dashboard</span>
                 </a>
@@ -122,6 +204,13 @@ $books = json_decode(file_get_contents('../data/buku.json'), true);
                     <span class="nav-icon">📖</span>
                     <span class="nav-text">Peminjaman</span>
                 </a>
+                <a href="antrian.php" class="nav-item">
+                    <span class="nav-icon">⏳</span>
+                    <span class="nav-text">Antrian</span>
+                    <?php if ($userQueue > 0): ?>
+                        <span class="nav-badge"><?= $userQueue ?></span>
+                    <?php endif; ?>
+                </a>
                 <a href="#" class="nav-item">
                     <span class="nav-icon">👥</span>
                     <span class="nav-text">Anggota</span>
@@ -131,7 +220,6 @@ $books = json_decode(file_get_contents('../data/buku.json'), true);
                     <span class="nav-text">Laporan</span>
                 </a>
             </nav>
-
             <div class="recent-activity">
                 <h3>Aktivitas Terbaru</h3>
                 <div class="activity-list">
@@ -141,25 +229,40 @@ $books = json_decode(file_get_contents('../data/buku.json'), true);
                     </div>
                     <div class="activity-item">
                         <div class="activity-dot blue"></div>
-                        <span>5 peminjaman hari ini</span>
+                        <span><?= $availableBooks ?> buku tersedia</span>
                     </div>
                     <div class="activity-item">
                         <div class="activity-dot orange"></div>
-                        <span>2 buku terlambat</span>
+                        <span><?= $totalQueue ?> antrian aktif</span>
                     </div>
+                    <?php if ($readyQueue > 0): ?>
+                    <div class="activity-item">
+                        <div class="activity-dot purple"></div>
+                        <span><?= $readyQueue ?> buku siap dipinjam</span>
+                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
+            <!-- Message Alert -->
+            <?php if ($message): ?>
+                <div class="alert alert-<?= $messageType ?>">
+                    <span class="alert-icon"><?= $messageType == 'success' ? '✅' : '❌' ?></span>
+                    <?= htmlspecialchars($message) ?>
+                    <button class="alert-close" onclick="this.parentElement.remove()">✕</button>
+                </div>
+            <?php endif; ?>
+
             <!-- Stats Cards -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-content">
                         <div class="stat-info">
                             <p class="stat-title">Total Buku</p>
-                            <p class="stat-value">2,847</p>
+                            <p class="stat-value"><?= $totalBooks ?></p>
                         </div>
                         <div class="stat-icon blue">📚</div>
                     </div>
@@ -167,8 +270,8 @@ $books = json_decode(file_get_contents('../data/buku.json'), true);
                 <div class="stat-card">
                     <div class="stat-content">
                         <div class="stat-info">
-                            <p class="stat-title">Buku Dipinjam</p>
-                            <p class="stat-value">1,234</p>
+                            <p class="stat-title">Buku Tersedia</p>
+                            <p class="stat-value"><?= $availableBooks ?></p>
                         </div>
                         <div class="stat-icon green">📖</div>
                     </div>
@@ -176,34 +279,62 @@ $books = json_decode(file_get_contents('../data/buku.json'), true);
                 <div class="stat-card">
                     <div class="stat-content">
                         <div class="stat-info">
-                            <p class="stat-title">Anggota Aktif</p>
-                            <p class="stat-value">856</p>
+                            <p class="stat-title">Antrian Saya</p>
+                            <p class="stat-value"><?= $userQueue ?></p>
                         </div>
-                        <div class="stat-icon purple">👥</div>
+                        <div class="stat-icon purple">⏳</div>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-content">
                         <div class="stat-info">
-                            <p class="stat-title">Buku Populer</p>
-                            <p class="stat-value">127</p>
+                            <p class="stat-title">Siap Dipinjam</p>
+                            <p class="stat-value"><?= $readyQueue ?></p>
                         </div>
-                        <div class="stat-icon orange">📈</div>
+                        <div class="stat-icon orange">✅</div>
                     </div>
                 </div>
             </div>
 
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h2>Aksi Cepat</h2>
+                <div class="action-buttons">
+                    <a href="antrian.php" class="action-btn primary">
+                        <span class="action-icon">⏳</span>
+                        <div class="action-content">
+                            <h3>Lihat Antrian</h3>
+                            <p><?= $userQueue ?> buku dalam antrian</p>
+                        </div>
+                    </a>
+                    <a href="#search-section" class="action-btn secondary">
+                        <span class="action-icon">🔍</span>
+                        <div class="action-content">
+                            <h3>Cari Buku</h3>
+                            <p>Temukan buku favorit Anda</p>
+                        </div>
+                    </a>
+                    <a href="#" class="action-btn tertiary">
+                        <span class="action-icon">📊</span>
+                        <div class="action-content">
+                            <h3>Laporan</h3>
+                            <p>Lihat statistik peminjaman</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
             <!-- Search and Filters -->
-            <div class="search-section">
+            <div class="search-section" id="search-section">
                 <div class="search-container">
                     <form method="POST" class="search-form" id="search-area">
                         <div class="search-input-container">
                             <span class="search-icon">🔍</span>
                             <input 
-                                type="text" 
-                                name="judul" 
-                                id="search-input" 
-                                class="search-input" 
+                                type="text"
+                                name="judul"
+                                id="search-input"
+                                class="search-input"
                                 placeholder="Cari buku, penulis, atau genre..."
                                 autocomplete="off"
                                 value="<?= isset($_POST['judul']) ? htmlspecialchars($_POST['judul']) : '' ?>"
@@ -211,7 +342,7 @@ $books = json_decode(file_get_contents('../data/buku.json'), true);
                         </div>
                         <button type="submit" name="cari" class="search-btn">Cari</button>
                     </form>
-
+                    
                     <!-- Search History Dropdown -->
                     <?php if (!isEmpty()): ?>
                         <div class="search-history" id="search-history" style="<?= $showDropdown ? 'display: block;' : 'display: none;' ?>">
@@ -233,7 +364,7 @@ $books = json_decode(file_get_contents('../data/buku.json'), true);
                             <?php endfor; ?>
                         </div>
                     <?php endif; ?>
-
+                    
                     <div class="filters">
                         <select class="filter-select">
                             <option value="all">Semua Genre</option>
@@ -259,88 +390,156 @@ $books = json_decode(file_get_contents('../data/buku.json'), true);
             <!-- Results Header -->
             <div class="results-header">
                 <h2>
-                    <?= isset($_POST['judul']) && $_POST['judul'] ? 'Hasil pencarian "' . htmlspecialchars($_POST['judul']) . '"' : 'Semua Buku' ?>
-                    <span class="results-count">(<?= count($hasilFilter) ?> buku)</span>
+                    <?php if (isset($_POST['judul']) && $_POST['judul']): ?>
+                        Hasil pencarian "<?= htmlspecialchars($_POST['judul']) ?>"
+                        <span class="results-count">(<?= count($hasilFilter) ?> buku)</span>
+                    <?php else: ?>
+                        Katalog Buku
+                        <span class="results-count">(<?= count($books) ?> buku)</span>
+                    <?php endif; ?>
                 </h2>
-                
-                <?php if (!empty($hasilFilter)): ?>
-                    <div class="books-grid" id="books-container">
-                        <?php foreach ($hasilFilter as $book): ?>
-                            <div class="book-card">
-                                <div class="book-cover-container">
-                                    <img src="<?= $book['cover'] ?>" alt="<?= htmlspecialchars($book['title']) ?>" class="book-cover">
-                                        <?php if (!$book['available']): ?>
-                                            <div class="unavailable-overlay">
-                                                <span class="unavailable-badge">Tidak Tersedia</span>
-                                            </div>
-                                        <?php endif; ?>
-                                </div>
-                                <div class="book-info">
-                                    <div class="book-header">
-                                        <h3 class="book-title"><?= htmlspecialchars($book['title']) ?></h3>
-                                            <div class="book-rating">
-                                                    <span class="star">⭐</span>
-                                                    <span class="rating-value"><?= $book['rating'] ?></span>
-                                            </div>
-                                    </div>
-                                    <p class="book-author"><?= htmlspecialchars($book['author']) ?></p>
-                                    <span class="book-genre"><?= htmlspecialchars($book['genre']) ?></span>
-                                    <p class="book-description"><?= htmlspecialchars($book['description']) ?></p>
-                                        <div class="book-meta">
-                                            <span><?= $book['year'] ?></span>
-                                            <span><?= $book['pages'] ?> halaman</span>
-                                        </div>
-                                        <button class="borrow-btn <?= !$book['available'] ? 'disabled' : '' ?>" <?= !$book['available'] ? 'disabled' : '' ?>>
-                                            <?= $book['available'] ? 'Pinjam Buku' : 'Tidak Tersedia' ?>
-                                        </button>
-                                    </div>
-                                </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php else: ?>
-                    <p>Tidak ditemukan hasil untuk pencarian ini.</p>
-                <?php endif; ?>
             </div>
 
             <!-- Books Grid -->
-            <div class="books-grid" id="books-container">
-                <?php foreach ($books as $book): ?>
-                    <div class="book-card">
-                        <div class="book-cover-container">
-                            <img src="<?= $book['cover'] ?>" alt="<?= htmlspecialchars($book['title']) ?>" class="book-cover">
-                            <?php if (!$book['available']): ?>
-                                <div class="unavailable-overlay">
-                                    <span class="unavailable-badge">Tidak Tersedia</span>
+            <?php if (!empty($hasilFilter)): ?>
+                <!-- Hasil Pencarian -->
+                <div class="books-grid" id="books-container">
+                    <?php foreach ($hasilFilter as $book): ?>
+                        <div class="book-card">
+                            <div class="book-cover-container">
+                                <img src="<?= $book['cover'] ?>" alt="<?= htmlspecialchars($book['title']) ?>" class="book-cover">
+                                <?php if (!$book['available']): ?>
+                                    <div class="unavailable-overlay">
+                                        <span class="unavailable-badge">Menunggu Tersedia</span>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="book-info">
+                                <div class="book-header">
+                                    <h3 class="book-title"><?= htmlspecialchars($book['title']) ?></h3>
+                                    <div class="book-rating">
+                                        <span class="star">⭐</span>
+                                        <span class="rating-value"><?= $book['rating'] ?></span>
+                                    </div>
                                 </div>
-                            <?php endif; ?>
-                        </div>
-                        <div class="book-info">
-                            <div class="book-header">
-                                <h3 class="book-title"><?= htmlspecialchars($book['title']) ?></h3>
-                                <div class="book-rating">
-                                    <span class="star">⭐</span>
-                                    <span class="rating-value"><?= $book['rating'] ?></span>
+                                <p class="book-author"><?= htmlspecialchars($book['author']) ?></p>
+                                <span class="book-genre"><?= htmlspecialchars($book['genre']) ?></span>
+                                <p class="book-description"><?= htmlspecialchars(substr($book['description'], 0, 100)) ?>...</p>
+                                <div class="book-meta">
+                                    <span><?= $book['year'] ?></span>
+                                    <span><?= $book['pages'] ?> halaman</span>
+                                </div>
+                                
+                                <?php if (!$book['available']): ?>
+                                    <?php 
+                                    $queueCount = getQueueCount($book['id']);
+                                    $userPosition = getQueuePosition($book['id']);
+                                    ?>
+                                    <div class="queue-info">
+                                        <p class="queue-count">
+                                            <span class="queue-icon">👥</span>
+                                            <?= $queueCount ?> orang dalam antrian
+                                        </p>
+                                        <?php if ($userPosition > 0): ?>
+                                            <p class="user-position">Posisi Anda: #<?= $userPosition ?></p>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
+                                
+                                <div class="book-actions">
+                                    <?php if ($book['available']): ?>
+                                        <button class="borrow-btn available">
+                                            📖 Pinjam Buku
+                                        </button>
+                                    <?php else: ?>
+                                        <?php if (getQueuePosition($book['id']) == 0): ?>
+                                            <form method="POST" style="display: inline; width: 100%;">
+                                                <input type="hidden" name="book_id" value="<?= $book['id'] ?>">
+                                                <button type="submit" name="add_to_queue" class="borrow-btn queue">
+                                                    ➕ Tambah ke Antrian
+                                                </button>
+                                            </form>
+                                        <?php else: ?>
+                                            <button class="borrow-btn queued" disabled>
+                                                ✅ Sudah dalam Antrian
+                                            </button>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
                                 </div>
                             </div>
-                            <p class="book-author"><?= htmlspecialchars($book['author']) ?></p>
-                            <span class="book-genre"><?= htmlspecialchars($book['genre']) ?></span>
-                            <p class="book-description"><?= htmlspecialchars($book['description']) ?></p>
-                            <div class="book-meta">
-                                <span><?= $book['year'] ?></span>
-                                <span><?= $book['pages'] ?> halaman</span>
-                            </div>
-                            <button class="borrow-btn <?= !$book['available'] ? 'disabled' : '' ?>" <?= !$book['available'] ? 'disabled' : '' ?>>
-                                <?= $book['available'] ? 'Pinjam Buku' : 'Tidak Tersedia' ?>
-                            </button>
                         </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-
-            <!-- Navigation Button -->
-            <div class="navigation-section">
-                <a href="antrian_peminjaman.php" class="queue-button">Lihat Antrian Peminjaman</a>
-            </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <!-- Semua Buku -->
+                <div class="books-grid" id="books-container">
+                    <?php foreach ($books as $book): ?>
+                        <div class="book-card">
+                            <div class="book-cover-container">
+                                <img src="<?= $book['cover'] ?>" alt="<?= htmlspecialchars($book['title']) ?>" class="book-cover">
+                                <?php if (!$book['available']): ?>
+                                    <div class="unavailable-overlay">
+                                        <span class="unavailable-badge">Menunggu Tersedia</span>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="book-info">
+                                <div class="book-header">
+                                    <h3 class="book-title"><?= htmlspecialchars($book['title']) ?></h3>
+                                    <div class="book-rating">
+                                        <span class="star">⭐</span>
+                                        <span class="rating-value"><?= $book['rating'] ?></span>
+                                    </div>
+                                </div>
+                                <p class="book-author"><?= htmlspecialchars($book['author']) ?></p>
+                                <span class="book-genre"><?= htmlspecialchars($book['genre']) ?></span>
+                                <p class="book-description"><?= htmlspecialchars(substr($book['description'], 0, 100)) ?>...</p>
+                                <div class="book-meta">
+                                    <span><?= $book['year'] ?></span>
+                                    <span><?= $book['pages'] ?> halaman</span>
+                                </div>
+                                
+                                <?php if (!$book['available']): ?>
+                                    <?php 
+                                    $queueCount = getQueueCount($book['id']);
+                                    $userPosition = getQueuePosition($book['id']);
+                                    ?>
+                                    <div class="queue-info">
+                                        <p class="queue-count">
+                                            <span class="queue-icon">👥</span>
+                                            <?= $queueCount ?> orang dalam antrian
+                                        </p>
+                                        <?php if ($userPosition > 0): ?>
+                                            <p class="user-position">Posisi Anda: #<?= $userPosition ?></p>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
+                                
+                                <div class="book-actions">
+                                    <?php if ($book['available']): ?>
+                                        <button class="borrow-btn available">
+                                            📖 Pinjam Buku
+                                        </button>
+                                    <?php else: ?>
+                                        <?php if (getQueuePosition($book['id']) == 0): ?>
+                                            <form method="POST" style="display: inline; width: 100%;">
+                                                <input type="hidden" name="book_id" value="<?= $book['id'] ?>">
+                                                <button type="submit" name="add_to_queue" class="borrow-btn queue">
+                                                    ➕ Tambah ke Antrian
+                                                </button>
+                                            </form>
+                                        <?php else: ?>
+                                            <button class="borrow-btn queued" disabled>
+                                                ✅ Sudah dalam Antrian
+                                            </button>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
         </main>
     </div>
 
@@ -370,10 +569,23 @@ $books = json_decode(file_get_contents('../data/buku.json'), true);
             }
         });
 
+        // Function untuk memilih history
+        function selectHistory(query) {
+            searchInput.value = query;
+            document.querySelector('form[method="POST"]').submit();
+        }
+
+        // Function untuk menutup history
+        function closeHistory() {
+            if (riwayatDropdown) {
+                riwayatDropdown.style.display = 'none';
+            }
+        }
+
         // View toggle functionality
         const viewButtons = document.querySelectorAll('.view-btn');
         const booksContainer = document.getElementById('books-container');
-
+        
         viewButtons.forEach(btn => {
             btn.addEventListener('click', () => {
                 viewButtons.forEach(b => b.classList.remove('active'));
@@ -384,6 +596,31 @@ $books = json_decode(file_get_contents('../data/buku.json'), true);
                     booksContainer.classList.add('list-view');
                 } else {
                     booksContainer.classList.remove('list-view');
+                }
+            });
+        });
+
+        // Auto hide alert after 5 seconds
+        const alert = document.querySelector('.alert');
+        if (alert) {
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                setTimeout(() => {
+                    alert.remove();
+                }, 300);
+            }, 5000);
+        }
+
+        // Smooth scroll untuk quick actions
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
                 }
             });
         });

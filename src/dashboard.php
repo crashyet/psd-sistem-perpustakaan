@@ -180,8 +180,8 @@ $readyQueue = count(array_filter($_SESSION['book_queue'], function($item) {
                 <?php endif; ?>
                 <button class="notification-btn">🔔</button>
                 <div class="user-menu">
-                    <div class="user-avatar">LS</div>
-                    <span class="user-name">Luhtitisari</span>
+                    <div class="user-avatar">U</div>
+                    <span class="user-name">User</span>
                     <span class="dropdown-arrow">▼</span>
                 </div>
             </div>

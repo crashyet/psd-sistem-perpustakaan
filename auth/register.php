@@ -59,9 +59,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full mb-4 shadow-lg"
           >
             <div
-              class="w-8 h-8 bg-white rounded-full flex items-center justify-center"
+              class="bg-gradient-to-r from-blue-600 to-blue-800 p-2 rounded-lg inline-flex items-center justify-center w-16 h-16"
             >
-              <div class="w-4 h-4 bg-blue-500 rounded-full"></div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="30"
+                height="30"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-book-open h-6 w-6 text-white"
+              >
+                <path d="M12 7v14"></path>
+                <path
+                  d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"
+                ></path>
+              </svg>
             </div>
           </div>
           <h1 class="text-3xl font-bold text-gray-800 mb-2">

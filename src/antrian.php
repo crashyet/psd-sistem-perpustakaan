@@ -1,90 +1,166 @@
 <?php
 session_start();
 
-// Inisialisasi Queue untuk antrian buku
-if (!isset($_SESSION['book_queue'])) {
-    $_SESSION['book_queue'] = [];
-}
-
-// Fungsi untuk mengelola antrian
-function addToQueue($bookId, $userId = 'current_user') {
-    $queueItem = [
-        'id' => uniqid(),
-        'book_id' => $bookId,
-        'user_id' => $userId,
-        'timestamp' => time(),
-        'status' => 'waiting'
-    ];
+// Class Queue untuk mengelola antrian
+class BookQueue {
+    private $queue;
+    private $maxSize;
     
-    // Cek apakah buku sudah ada dalam antrian user
-    foreach ($_SESSION['book_queue'] as $item) {
-        if ($item['book_id'] == $bookId && $item['user_id'] == $userId) {
-            return false; // Sudah ada dalam antrian
+    public function __construct($maxSize = 100) {
+        $this->maxSize = $maxSize;
+        if (!isset($_SESSION['book_queue_data'])) {
+            $_SESSION['book_queue_data'] = [];
         }
+        $this->queue = &$_SESSION['book_queue_data'];
     }
     
-    $_SESSION['book_queue'][] = $queueItem;
-    return true;
-}
-
-function removeFromQueue($queueId) {
-    foreach ($_SESSION['book_queue'] as $key => $item) {
-        if ($item['id'] == $queueId) {
-            unset($_SESSION['book_queue'][$key]);
-            $_SESSION['book_queue'] = array_values($_SESSION['book_queue']); // Reindex array
-            return true;
+    // Fungsi enqueue - menambah item ke antrian
+    public function enqueue($bookId, $userId = 'current_user') {
+        if ($this->isFull()) {
+            return false;
         }
-    }
-    return false;
-}
-
-function processQueue($bookId) {
-    // Cari antrian pertama untuk buku ini
-    foreach ($_SESSION['book_queue'] as $key => $item) {
-        if ($item['book_id'] == $bookId && $item['status'] == 'waiting') {
-            $_SESSION['book_queue'][$key]['status'] = 'ready';
-            $_SESSION['book_queue'][$key]['ready_time'] = time();
-            
-            // Update status buku menjadi tersedia di file JSON
-            updateBookAvailability($bookId, true);
-            
-            return $item;
-        }
-    }
-    return false;
-}
-
-function updateBookAvailability($bookId, $available) {
-    $jsonFile = '../data/buku.json';
-    $books = json_decode(file_get_contents($jsonFile), true);
-    
-    // Cari dan update buku
-    foreach ($books as &$book) {
-        if ($book['id'] == $bookId) {
-            $book['available'] = $available;
-            break;
-        }
-    }
-    
-    // Simpan kembali ke file JSON
-    file_put_contents($jsonFile, json_encode($books, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-    return true;
-}
-
-function getQueuePosition($bookId, $userId = 'current_user') {
-    $position = 1;
-    foreach ($_SESSION['book_queue'] as $item) {
-        if ($item['book_id'] == $bookId) {
-            if ($item['user_id'] == $userId) {
-                return $position;
-            }
-            if ($item['status'] == 'waiting') {
-                $position++;
+        
+        $queueItem = [
+            'id' => uniqid(),
+            'book_id' => $bookId,
+            'user_id' => $userId,
+            'timestamp' => time(),
+            'status' => 'waiting'
+        ];
+        
+        // Cek apakah buku sudah ada dalam antrian user
+        foreach ($this->queue as $item) {
+            if ($item['book_id'] == $bookId && $item['user_id'] == $userId) {
+                return false; // Sudah ada dalam antrian
             }
         }
+        
+        $this->queue[] = $queueItem;
+        return true;
     }
-    return 0;
+    
+    // Fungsi dequeue - mengeluarkan item pertama dari antrian
+    public function dequeue() {
+        if ($this->isEmpty()) {
+            return false;
+        }
+        
+        $item = array_shift($this->queue);
+        return $item;
+    }
+    
+    // Fungsi dequeue berdasarkan ID
+    public function dequeueById($queueId) {
+        foreach ($this->queue as $key => $item) {
+            if ($item['id'] == $queueId) {
+                unset($this->queue[$key]);
+                $this->queue = array_values($this->queue); // Reindex array
+                return $item;
+            }
+        }
+        return false;
+    }
+    
+    // Fungsi isEmpty - mengecek apakah antrian kosong
+    public function isEmpty() {
+        return count($this->queue) == 0;
+    }
+    
+    // Fungsi isFull - mengecek apakah antrian penuh
+    public function isFull() {
+        return count($this->queue) >= $this->maxSize;
+    }
+    
+    // Fungsi clear - mengosongkan antrian
+    public function clear() {
+        $this->queue = [];
+        return true;
+    }
+    
+    // Fungsi cetak - menampilkan isi antrian
+    public function cetak() {
+        return $this->queue;
+    }
+    
+    // Fungsi untuk mendapatkan ukuran antrian
+    public function size() {
+        return count($this->queue);
+    }
+    
+    // Fungsi untuk memproses antrian berdasarkan book ID
+    public function processQueueByBookId($bookId) {
+        foreach ($this->queue as $key => $item) {
+            if ($item['book_id'] == $bookId && $item['status'] == 'waiting') {
+                $this->queue[$key]['status'] = 'ready';
+                $this->queue[$key]['ready_time'] = time();
+                
+                // Update status buku menjadi tersedia di file JSON
+                $this->updateBookAvailability($bookId, true);
+                
+                return $this->queue[$key];
+            }
+        }
+        return false;
+    }
+    
+    // Fungsi untuk mendapatkan posisi dalam antrian
+    public function getQueuePosition($bookId, $userId = 'current_user') {
+        $position = 1;
+        foreach ($this->queue as $item) {
+            if ($item['book_id'] == $bookId) {
+                if ($item['user_id'] == $userId) {
+                    return $position;
+                }
+                if ($item['status'] == 'waiting') {
+                    $position++;
+                }
+            }
+        }
+        return 0;
+    }
+    
+    // Fungsi untuk mendapatkan antrian berdasarkan user
+    public function getQueueByUser($userId = 'current_user') {
+        return array_filter($this->queue, function($item) use ($userId) {
+            return $item['user_id'] == $userId;
+        });
+    }
+    
+    // Fungsi untuk mendapatkan jumlah antrian berdasarkan book ID dan status
+    public function getQueueCountByBookId($bookId, $status = 'waiting') {
+        return count(array_filter($this->queue, function($item) use ($bookId, $status) {
+            return $item['book_id'] == $bookId && $item['status'] == $status;
+        }));
+    }
+    
+    // Fungsi untuk mendapatkan antrian berdasarkan status
+    public function getQueueByStatus($status) {
+        return array_filter($this->queue, function($item) use ($status) {
+            return $item['status'] == $status;
+        });
+    }
+    
+    // Fungsi helper untuk update ketersediaan buku
+    private function updateBookAvailability($bookId, $available) {
+        $jsonFile = '../data/buku.json';
+        $books = json_decode(file_get_contents($jsonFile), true);
+        
+        // Cari dan update buku
+        foreach ($books as &$book) {
+            if ($book['id'] == $bookId) {
+                $book['available'] = $available;
+                break;
+            }
+        }
+        
+        // Simpan kembali ke file JSON
+        file_put_contents($jsonFile, json_encode($books, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        return true;
+    }
 }
+
+// Inisialisasi Queue
+$bookQueue = new BookQueue();
 
 // Load data buku
 $books = json_decode(file_get_contents('../data/buku.json'), true);
@@ -95,18 +171,23 @@ $messageType = '';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['add_to_queue'])) {
         $bookId = $_POST['book_id'];
-        if (addToQueue($bookId)) {
+        if ($bookQueue->enqueue($bookId)) {
             $message = 'Buku berhasil ditambahkan ke antrian!';
             $messageType = 'success';
         } else {
-            $message = 'Buku sudah ada dalam antrian Anda!';
-            $messageType = 'error';
+            if ($bookQueue->isFull()) {
+                $message = 'Antrian sudah penuh!';
+                $messageType = 'error';
+            } else {
+                $message = 'Buku sudah ada dalam antrian Anda!';
+                $messageType = 'error';
+            }
         }
     }
     
     if (isset($_POST['remove_from_queue'])) {
         $queueId = $_POST['queue_id'];
-        if (removeFromQueue($queueId)) {
+        if ($bookQueue->dequeueById($queueId)) {
             $message = 'Buku berhasil dihapus dari antrian!';
             $messageType = 'success';
         }
@@ -114,7 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     if (isset($_POST['process_queue'])) {
         $bookId = $_POST['book_id'];
-        $processed = processQueue($bookId);
+        $processed = $bookQueue->processQueueByBookId($bookId);
         if ($processed) {
             $message = 'Antrian berhasil diproses! Buku sekarang tersedia untuk dipinjam.';
             $messageType = 'success';
@@ -126,9 +207,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['mark_available'])) {
         $bookId = $_POST['book_id'];
         // Update status buku menjadi tersedia
-        updateBookAvailability($bookId, true);
+        $bookQueue->updateBookAvailability($bookId, true);
         // Proses antrian otomatis
-        processQueue($bookId);
+        $bookQueue->processQueueByBookId($bookId);
         $message = 'Buku telah tersedia dan antrian diproses!';
         $messageType = 'success';
         // Reload data buku setelah update
@@ -138,11 +219,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Tambahan: Fungsi untuk menandai buku tidak tersedia (untuk testing)
     if (isset($_POST['mark_unavailable'])) {
         $bookId = $_POST['book_id'];
-        updateBookAvailability($bookId, false);
+        $bookQueue->updateBookAvailability($bookId, false);
         $message = 'Buku telah ditandai tidak tersedia!';
         $messageType = 'success';
         // Reload data buku setelah update
         $books = json_decode(file_get_contents('../data/buku.json'), true);
+    }
+    
+    // Fungsi untuk mengosongkan antrian (admin)
+    if (isset($_POST['clear_queue'])) {
+        $bookQueue->clear();
+        $message = 'Semua antrian telah dihapus!';
+        $messageType = 'success';
     }
 }
 
@@ -151,10 +239,9 @@ $unavailableBooks = array_filter($books, function($book) {
     return !$book['available'];
 });
 
-// Get current user's queue
-$userQueue = array_filter($_SESSION['book_queue'], function($item) {
-    return $item['user_id'] == 'current_user';
-});
+// Get current user's queue menggunakan method baru
+$userQueue = $bookQueue->getQueueByUser();
+$allQueue = $bookQueue->cetak(); // Menggunakan method cetak()
 ?>
 
 <!DOCTYPE html>
@@ -239,7 +326,7 @@ $userQueue = array_filter($_SESSION['book_queue'], function($item) {
                     <div class="stat-content">
                         <div class="stat-info">
                             <p class="stat-title">Total Antrian</p>
-                            <p class="stat-value"><?= count($_SESSION['book_queue']) ?></p>
+                            <p class="stat-value"><?= $bookQueue->size() ?></p>
                         </div>
                         <div class="stat-icon blue">⏳</div>
                     </div>
@@ -257,7 +344,7 @@ $userQueue = array_filter($_SESSION['book_queue'], function($item) {
                     <div class="stat-content">
                         <div class="stat-info">
                             <p class="stat-title">Siap Dipinjam</p>
-                            <p class="stat-value"><?= count(array_filter($_SESSION['book_queue'], function($item) { return $item['status'] == 'ready'; })) ?></p>
+                            <p class="stat-value"><?= count($bookQueue->getQueueByStatus('ready')) ?></p>
                         </div>
                         <div class="stat-icon orange">✅</div>
                     </div>
@@ -270,6 +357,37 @@ $userQueue = array_filter($_SESSION['book_queue'], function($item) {
                         </div>
                         <div class="stat-icon red">❌</div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Queue Status Info -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>Status Antrian</h2>
+                    <div style="display: flex; gap: 1rem;">
+                        <span class="section-count">
+                            <?= $bookQueue->isEmpty() ? 'Kosong' : $bookQueue->size() . ' item' ?>
+                        </span>
+                        <?php if ($bookQueue->isFull()): ?>
+                            <span class="section-count" style="background: #fef2f2; color: #dc2626;">Penuh</span>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <p><strong>Kapasitas:</strong> <?= $bookQueue->size() ?>/<?= 100 ?></p>
+                    <p><strong>Status:</strong> <?= $bookQueue->isEmpty() ? 'Kosong' : ($bookQueue->isFull() ? 'Penuh' : 'Tersedia') ?></p>
+                </div>
+                
+                <!-- Admin Controls -->
+                <div style="margin-top: 1rem;">
+                    <form method="POST" style="display: inline;">
+                        <button type="submit" name="clear_queue" class="btn btn-danger btn-sm" 
+                                onclick="return confirm('Hapus semua antrian? Tindakan ini tidak dapat dibatalkan!')"
+                                <?= $bookQueue->isEmpty() ? 'disabled' : '' ?>>
+                            🗑️ Kosongkan Semua Antrian
+                        </button>
+                    </form>
                 </div>
             </div>
 
@@ -294,7 +412,7 @@ $userQueue = array_filter($_SESSION['book_queue'], function($item) {
                                 return $b['id'] == $queueItem['book_id'];
                             });
                             $book = reset($book);
-                            $position = getQueuePosition($queueItem['book_id']);
+                            $position = $bookQueue->getQueuePosition($queueItem['book_id']);
                             ?>
                             <div class="queue-item <?= $queueItem['status'] ?>">
                                 <div class="queue-book-info">
@@ -348,10 +466,10 @@ $userQueue = array_filter($_SESSION['book_queue'], function($item) {
             <div class="section">
                 <div class="section-header">
                     <h2>Proses Antrian</h2>
-                    <span class="section-count"><?= count($_SESSION['book_queue']) ?> total</span>
+                    <span class="section-count"><?= $bookQueue->size() ?> total</span>
                 </div>
                 
-                <?php if (empty($_SESSION['book_queue'])): ?>
+                <?php if ($bookQueue->isEmpty()): ?>
                     <div class="empty-state">
                         <div class="empty-icon">📋</div>
                         <h3>Tidak Ada Antrian</h3>
@@ -359,7 +477,7 @@ $userQueue = array_filter($_SESSION['book_queue'], function($item) {
                     </div>
                 <?php else: ?>
                     <div class="admin-queue-list">
-                        <?php foreach ($_SESSION['book_queue'] as $queueItem): ?>
+                        <?php foreach ($allQueue as $queueItem): ?>
                             <?php 
                             $book = array_filter($books, function($b) use ($queueItem) {
                                 return $b['id'] == $queueItem['book_id'];
@@ -437,11 +555,9 @@ $userQueue = array_filter($_SESSION['book_queue'], function($item) {
                                     <p class="book-author"><?= htmlspecialchars($book['author']) ?></p>
                                     <span class="book-genre"><?= htmlspecialchars($book['genre']) ?></span>
                                     
-                                    <?php 
-                                    $queueCount = count(array_filter($_SESSION['book_queue'], function($item) use ($book) {
-                                        return $item['book_id'] == $book['id'] && $item['status'] == 'waiting';
-                                    }));
-                                    $userPosition = getQueuePosition($book['id']);
+                                    <?php
+                                    $queueCount = $bookQueue->getQueueCountByBookId($book['id']);
+                                    $userPosition = $bookQueue->getQueuePosition($book['id']);
                                     ?>
                                     
                                     <div class="queue-info">
@@ -458,7 +574,8 @@ $userQueue = array_filter($_SESSION['book_queue'], function($item) {
                                         <?php if ($userPosition == 0): ?>
                                             <form method="POST" style="display: inline;">
                                                 <input type="hidden" name="book_id" value="<?= $book['id'] ?>">
-                                                <button type="submit" name="add_to_queue" class="btn btn-primary">
+                                                <button type="submit" name="add_to_queue" class="btn btn-primary"
+                                                        <?= $bookQueue->isFull() ? 'disabled title="Antrian penuh"' : '' ?>>
                                                     ➕ Tambah ke Antrian
                                                 </button>
                                             </form>
